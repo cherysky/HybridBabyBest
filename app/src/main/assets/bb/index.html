@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<title>宝宝棒Hybrid</title>
+	<meta name="author" content="Alvaro Trigo Lopez" />
+	<meta name="Resource-type" content="Document" />
+	<style>
+		* {margin:0; padding:0;}
+		body {overflow: hidden;}
+		i {font-style: normal;}
+		.topSelect {width:80%;margin:0 auto;position:relative;height:120px;}
+		.topSelect img {width:100%;}
+		.item1 {display:block;position:absolute;left:0;top:40px;width:60px;height:60px;}
+		.centerItem {display:block;width:100px;height:100px;position:absolute;left:50%;top:0;margin-left:-50px;}
+		.item2 {display:block;position:absolute;right:0;top:40px;width:60px;height:60px;}
+		.item1 i, .item2 i {text-align: center;line-height: 20px;display:block;position:absolute;right:-1px;bottom:-1px;display: none;width:20px;height:20px;border-radius: 50%;color:#fff;background-color:red;}
+		.content {padding-top:20%;}
+		.bb_bg {width: 100%;position:absolute;top:0;left:0;right:0;}
+		.bb_bg img {width: 100%;}
+	</style>
+</head>
+<body>
+	<div class="content">
+		<div class="bb_bg">
+			<img src="images/baby.png" />
+		</div>
+		<div class="topSelect">
+			<span class="btn item1"><img src="images/boy.png"/><i>0</i></span>
+			<span class="btn centerItem"><img src="images/camera.png"/></span>
+			<span class="btn item2"><img src="images/girl.png"/><i>0</i></span>
+		</div>
+	</div>
+
+	<script src="jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="js/greensock/minified/TweenMax.min.js"></script>
+	<script type="text/javascript">
+		(function(w, callback){
+			if (w.WebViewJavascriptBridge) {
+				callback(WebViewJavascriptBridge)
+			} else {
+				document.addEventListener(
+					'WebViewJavascriptBridgeReady'
+					, function() {
+							callback(WebViewJavascriptBridge)
+					},
+					false
+				);
+			}
+		})(window, function(bridge) {
+			bridge.init(function(message, responseCallback) {
+				//
+			});
+
+			bridge.registerHandler("getUploadCount", function(data, responseCallback) {
+				$('.item1 > i').show().text(data);
+				responseCallback(responseData);
+			});
+		});
+
+		var sexResult = {'sex':'-1'};
+
+		$(function(){
+			// TweenMax.from('.bb_bg', 2, {opacity: 0});
+			TweenMax.staggerFrom('.btn', 2, {scale:0.5, opacity: 0, delay:0.5, ease:Elastic.easeOut}, 0.2);
+
+			setTimeout(function(){
+				sexSelect();
+			}, 2000);
+
+			$('.item1').on('click', function(){
+				sexResult.sex = '男';
+				sexSelect();
+			});
+
+			$('.item2').on('click', function(){
+				sexResult.sex = '女';
+				sexSelect();
+			});
+
+			function sexSelect(){
+				window.WebViewJavascriptBridge.callHandler(
+						'sex'
+						, sexResult
+						, function(responseData) {
+
+						}
+				);
+			}
+
+			$('.centerItem').on('click', function(){
+				window.WebViewJavascriptBridge.callHandler(
+						'callCamera'
+						, sexResult
+						, function(responseData) {
+
+						}
+				);
+			});
+		});
+	</script>
+</body>
+</html>
